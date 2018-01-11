@@ -1,0 +1,23 @@
+#parse("template/macro.vm")
+
+import
+
+
+@Path("measures"))
+public class RestService{
+
+    private final KafkaStreams streams;
+    private final String storeName;
+    private Server jettyServer;
+    private final HostInfo hostInfo;
+    private final Client client = ClientBuilder.newBuilder().register(JacksonFeature.class).build();
+
+    static class OutputBean{
+
+
+    }
+
+
+
+
+}

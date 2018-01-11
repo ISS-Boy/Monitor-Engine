@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<monitor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="/monitor/Monitor.xsd">
+    <datasource>
+        <kafka>
+            <connection>
+                <bootstrap_server>192.168.222.226:9092</bootstrap_server>
+                <schema_registry>http://192.168.222.226:8081</schema_registry>
+                <application_id>application-test</application_id>
+                <key_serializer>String</key_serializer>
+                <key_deserializer>String</key_deserializer>
+                <value_serializer>AVRO</value_serializer>
+                <value_deserializer>AVRO</value_deserializer>
+            </connection>
+            <datasink>opentsdb</datasink>
+        </kafka>
+        <elasticsearch>
+            <connection>
+                <ip>192.168.222.232:9200</ip>
+                <index>synthea</index>
+                <type>sythnea</type>
+            </connection>
+        </elasticsearch>
+        <opentsdb>
+            <connection>
+                <ip>172.16.17.177:3000</ip>
+            </connection>
+        </opentsdb>
+        <grafana>
+            <connection>
+                <ip>192.168.222.232:3000</ip>
+            </connection>
+        </grafana>
+    </datasource>
+    <dashboard>
+        <panels>
+            <panel query_id="1">
+                <type></type>
+                <metrics></metrics>
+                <filter></filter>
+                <group></group>
+            </panel>
+        </panels>
+    </dashboard>
+    <pattern>
+        <pattern_lib />
+    </pattern>
+    <monitor-queries>
+        <query id="1">
+            <target>
+                <datatype>mhealth</datatype>
+                <structure>{"header":{"id":"21672706-a52c-4d8e-8fbd-982acad98ca4","schema_id":{"namespace":"omh","name":"blood-pressure","version":"1.0"},"user_id":"the-user-6240"},"body":{"effective_time_frame":{"date_time":"2017-01-01T12:02:25Z"},"systolic_blood_pressure":{"unit":"mmHg","value":111.5894042161057},"diastolic_blood_pressure":{"unit":"mmHg","value":67.71621292933139}}}
+                </structure>
+            </target>
+            <operation>
+                <join>
+                    <join_type>Dynamic-Join-Dynamic</join_type>
+                    <join_targets>
+                        <target>
+                            <id>1</id>
+                            <left>heart-rate</left>
+                            <right>blood-pressure</right>
+                            <join_type>inner</join_type>
+                            <source>mhealth</source>
+                            <condition>user-id</condition>
+                        </target>
+                    </join_targets>
+                </join>
+
+                <group />
+
+                <select />
+
+                <window/>
+
+                <growth />
+
+                <aggregation />
+                <filter>
+                    <filters>
+                        <filter>
+                            <value>heart_rate</value>
+                            <op>LQ</op>
+                            <threhold>120</threhold>
+                        </filter>
+                        <filter>
+                            <value>systolic_blood_pressure</value>
+                            <op>LQ</op>
+                            <threhold>180</threhold>
+                        </filter>
+                    </filters>
+                </filter>
+                <characteristic>
+                    <characteristic />
+                </characteristic>
+            </operation>
+        </query>
+    </monitor-queries>
+</monitor>

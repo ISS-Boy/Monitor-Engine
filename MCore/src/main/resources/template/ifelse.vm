@@ -1,0 +1,7 @@
+#set($serializer = $external)
+
+#if(${serializer} == "AVRO")
+    SpecificAvroSerde.class
+#else
+    Serdes.${serializer}().getClass().getName()
+#end

@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- 仪表板 -->
+    <xs:complexType name="PanelType">
+        <xs:all>
+            <xs:element name="type" type="xs:string"/>
+            <xs:element name="metrics" type="xs:string"/>
+            <xs:element name="filter" type="xs:string"/>
+            <xs:element name="group" type="xs:string"/>
+        </xs:all>
+        <xs:attribute name="query_id" type="xs:unsignedInt" use="required"/>
+    </xs:complexType>
+
+    <!-- kafka连接 -->
+    <xs:complexType name="KafkaConnectionType">
+        <xs:sequence>
+            <xs:element name="bootstrap_server" type="xs:string"/>
+            <xs:element name="schema_registry" type="xs:string"/>
+            <xs:element name="application_id" type="xs:string"/>
+            <xs:element name="key_serializer" type="xs:string"/>
+            <xs:element name="key_deserializer" type="xs:string"/>
+            <xs:element name="value_serializer" type="xs:string"/>
+            <xs:element name="value_deserializer" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ElasticSearch连接 -->
+    <xs:complexType name="ElasticSearchConnection">
+        <xs:sequence>
+            <xs:element name="ip" type="xs:string" />
+            <xs:element name="index" type="xs:string" />
+            <xs:element name="type" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Opentsdb连接 -->
+    <xs:complexType name="OpentsdbConnection">
+        <xs:sequence>
+            <xs:element name="ip" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- grafana连接 -->
+    <xs:complexType name="GrafanaConnection">
+        <xs:sequence>
+            <xs:element name="ip" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 模式实例 -->
+    <xs:complexType name="PatternType">
+        <xs:sequence>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="method" type="xs:string"/>
+            <xs:element name="characteristic" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+    </xs:complexType>
+
+    <!-- 目标数据类型 -->
+    <xs:simpleType name="DataTypeRestriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="synthea" />
+            <xs:enumeration value="mhealth" />
+            <xs:enumeration value="hybrid" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- 数据描述 -->
+    <xs:complexType name="DataDescription">
+        <xs:sequence>
+            <xs:element name="datatype">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="synthea" />
+                        <xs:enumeration value="mhealth" />
+                        <xs:enumeration value="hybrid" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="structure" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 连接类型 -->
+    <xs:complexType name="JoinType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="join_type" >
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="Dynamic-Join-Dynamic" />
+                        <xs:enumeration value="Dynamic-Join-Static" />
+                        <xs:enumeration value="Static-Join-Static" />
+                        <xs:enumeration value="Other" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="join_targets">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="target" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:all>
+                                    <xs:element name="id" type="xs:unsignedInt" />
+                                    <xs:element name="left" type="xs:string" />
+                                    <xs:element name="right" type="xs:string" />
+                                    <xs:element name="join_type" type="xs:string" />
+                                    <xs:element name="source" type="xs:string" />
+                                    <xs:element name="condition" type="xs:string" />
+                                </xs:all>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 分组类型 -->
+    <xs:complexType name="GroupType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="groups">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="having" type="xs:string" />
+            <xs:element name="condition" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 选择投影描述 -->
+    <xs:complexType name="SelectType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="selects">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="distinct" type="xs:boolean" use="required"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 窗口描述 -->
+    <xs:complexType name="WindowType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="type">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="tumbling" />
+                        <xs:enumeration value="hopping" />
+                        <xs:enumeration value="sliding" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="window_length" type="xs:string" />
+            <xs:element name="window_interval" type="xs:unsignedInt" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 增幅增比描述 -->
+    <xs:complexType name="GrowthType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="calculation_interval" type="xs:unsignedInt" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 聚集描述 -->
+    <xs:complexType name="AggregationType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="aggregation_values">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="name" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType mixed="true">
+                                <xs:attribute name="aggregation_type" use="required">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="count"/>
+                                            <xs:enumeration value="average"/>
+                                            <xs:enumeration value="max"/>
+                                            <xs:enumeration value="min"/>
+                                            <xs:enumeration value="sum"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 过滤描述 -->
+    <xs:complexType name="FilterType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="filters">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="filter" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="value" type="xs:string"/>
+                                    <xs:element name="op">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="LT" />
+                                                <xs:enumeration value="LQ" />
+                                                <xs:enumeration value="ST" />
+                                                <xs:enumeration value="SQ" />
+                                                <xs:enumeration value="EQ" />
+                                            </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:element>
+                                    <xs:element name="threhold" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 特征描述 -->
+    <xs:complexType name="CharacteristicType">
+        <xs:sequence minOccurs="0">
+            <xs:element name="characteristic">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="pattern_id" type="xs:unsignedInt" minOccurs="0" maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- 操作描述 -->
+    <xs:complexType name="OperationDescription">
+        <xs:sequence>
+            <xs:element name="join" type="JoinType" />
+            <xs:element name="group" type="GroupType" />
+            <xs:element name="select" type="SelectType" />
+            <xs:element name="window" type="WindowType" />
+            <xs:element name="growth" type="GrowthType" />
+            <xs:element name="aggregation" type="AggregationType" />
+            <xs:element name="filter" type="FilterType" />
+            <xs:element name="characteristic" type="CharacteristicType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- monitor总体结构 -->
+    <xs:element name="monitor">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="datasource">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="kafka">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="connection" type="KafkaConnectionType" />
+                                        <xs:element name="datasink" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="elasticsearch">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="connection" type="ElasticSearchConnection"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="opentsdb">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="connection" type="OpentsdbConnection"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="grafana">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="connection" type="GrafanaConnection"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="dashboard">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="panels">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="panel" minOccurs="0" maxOccurs="unbounded" type="PanelType"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="pattern">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="pattern_lib">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="instance" type="PatternType" minOccurs="0" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="monitor-queries">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="query" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="target" type="DataDescription" />
+                                        <xs:element name="operation" type="OperationDescription" />
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
