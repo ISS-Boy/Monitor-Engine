@@ -1,14 +1,67 @@
 package cn.issboy.mengine.core.util;
 
+import java.util.Locale;
+import java.util.regex.Pattern;
+
 /**
  * created by just on 18-1-8
  */
 public class StringUtil {
 
-    public static boolean compare(String topic,String measure){
-        return trimDash(topic).equals(trimDash(measure));
+    public static String wrapString(String str) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\"")
+                .append(str)
+                .append("\"");
+
+        return sb.toString();
     }
-    public static String trimDash(String dashedString){
-        return dashedString.replace("-","").replace("_","");
+
+    public static String trimLastSymbol(String str) {
+        int length = str.length();
+        switch (str.charAt(length - 1)) {
+            case ',':
+                return str.substring(0, str.length() - 1);
+            case '|':
+            case '&':
+                return str.substring(0, length - 2);
+            default:
+                return str;
+        }
+
     }
+
+    public static String lowerCase(String type) {
+        char[] res = type.toCharArray();
+        for (int i = 1; i < res.length; i++) {
+            res[i] += ('a' - 'A');
+        }
+        return new String(res);
+    }
+
+    public static String toSymbol(String boolExp) {
+        switch (boolExp.toLowerCase()) {
+            case "and":
+                return "&&";
+            case "or":
+                return "||";
+        }
+        return boolExp;
+    }
+
+    // format blood-pressure -> BLOOD_PRESSURE
+    public static String formatVariable(String topicName) {
+        return topicName.replace('-', '_').toUpperCase(Locale.ROOT);
+    }
+
+    public static String formatDir(String dir) {
+        String separator = System.getProperty("file.separator");
+        return dir.replace("/",separator);
+    }
+
+    // Todo: just for test. removed after changing the way to implement schemaCatalog
+    public static String replaceDash(String topicName) {
+        return topicName.replace('_', '-');
+    }
+
 }

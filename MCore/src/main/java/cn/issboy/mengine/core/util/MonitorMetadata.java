@@ -1,28 +1,50 @@
 package cn.issboy.mengine.core.util;
 
-import cn.issboy.mengine.parser.pojo.KafkaConnectionType;
-import cn.issboy.mengine.parser.pojo.Monitor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * created by just on 18-1-8
  */
 public class MonitorMetadata {
-    private final String DSLCode;
-    private final KafkaConnectionType streamConfig;
-//    private final ;
+    private String schemaRegistry;
+    private String bootstrapServers;
 
-    public MonitorMetadata(String dslCode, KafkaConnectionType streamConfig) {
-        this.DSLCode = dslCode;
-        this.streamConfig = streamConfig;
+    private final List<String> DSLCode = new ArrayList<>();
+    private final List<String> monitorId = new ArrayList<>();
+
+
+    public String getSchemaRegistry() {
+        return schemaRegistry;
     }
 
+    public void setSchemaRegistry(String schemaRegistry) {
+        this.schemaRegistry = schemaRegistry;
+    }
 
-    public String getDSLCode() {
+    public String getBootstrapServers() {
+        return bootstrapServers;
+    }
+
+    public void setBootstrapServers(String bootstrapServers) {
+        this.bootstrapServers = bootstrapServers;
+    }
+
+    public void addDSLCode(String dslCode) {
+        DSLCode.add(dslCode);
+    }
+
+    public List<String> getDSLCode() {
         return this.DSLCode;
     }
 
-    public KafkaConnectionType getStreamConfig() {
-        return streamConfig;
+    public void addMonitorId(String id) {
+        monitorId.add(id);
+    }
+
+    public List<String> getMonitorId() {
+        return this.monitorId;
     }
 
 

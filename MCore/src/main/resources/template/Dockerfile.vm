@@ -1,0 +1,7 @@
+#set($jarPath = "monitor-kStream-application.jar")
+
+FROM anapsix/alpine-java:8u151b12_jdk
+MAINTAINER just@issboy
+EXPOSE ${dockerPort}
+ADD ./$jarPath /opt/
+ENTRYPOINT ["java","-jar","-ea","-Dcom.sun.management.jmxremote.authenticate=false","-Dcom.sun.management.jmxremote.ssl=false","-Dcom.sun.management.jmxremote.port=80","/opt/$jarPath"]

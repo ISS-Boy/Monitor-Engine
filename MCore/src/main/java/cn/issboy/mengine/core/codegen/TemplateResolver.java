@@ -14,10 +14,8 @@ import java.io.StringWriter;
  */
 public class TemplateResolver {
 
-    private static final String MAIN = "template/Main.vm";
-
-    private VelocityEngine ve;
-    private VelocityContext ctx;
+    private final VelocityEngine ve;
+    private final VelocityContext ctx;
 
     public TemplateResolver() {
         ve = new VelocityEngine();
@@ -27,13 +25,14 @@ public class TemplateResolver {
         ctx = new VelocityContext();
     }
 
-    public String resolve(final MonitorMetadata monitorMetadata){
-        Template test = ve.getTemplate(MAIN);
+    public String resolveMetadata(final Object Metadata,String keyName,String templateName){
+        Template template = ve.getTemplate(templateName);
         StringWriter sw = new StringWriter();
 
-        ctx.put("MonitorMetadata",monitorMetadata);
+        ctx.put(keyName,Metadata);
 
-        test.merge(ctx,sw);
+        template.merge(ctx,sw);
         return sw.toString();
     }
+
 }

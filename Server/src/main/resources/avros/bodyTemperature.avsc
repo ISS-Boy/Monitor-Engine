@@ -1,0 +1,10 @@
+{
+    "namespace": "org.mhealth.open.data.avro",
+    "name": "body_temperature",
+    "type": "record",
+    "fields": [
+        {"name": "user_id", "type": ["string","null"] },
+        {"name": "timestamp", "type": "long"},
+        {"name": "body_temperature", "type" : "float"}
+    ]
+}

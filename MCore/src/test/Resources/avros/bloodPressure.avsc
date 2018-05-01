@@ -1,0 +1,11 @@
+{
+    "namespace": "org.mhealth.open.data.avro",
+    "name": "blood_pressure",
+    "type": "record",
+    "fields": [
+        {"name": "user_id", "type": ["string","null"] },
+        {"name": "timestamp", "type": "long"},
+        {"name": "systolic_blood_pressure", "type" : "float"},
+        {"name": "diastolic_blood_pressure", "type" : "float"}
+    ]
+}

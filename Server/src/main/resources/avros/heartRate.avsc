@@ -1,0 +1,10 @@
+{
+    "namespace": "org.mhealth.open.data.avro",
+    "name": "heart_rate",
+    "type": "record",
+    "fields": [
+        {"name": "user_id", "type": ["string","null"] },
+        {"name": "timestamp", "type": "long"},
+        {"name": "heart_rate", "type" : "float"}
+    ]
+}

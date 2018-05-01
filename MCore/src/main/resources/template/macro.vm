@@ -9,28 +9,23 @@ package cn.issboy.streamapp;
 ##  import filter-related-classes
 ## ……
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.serialization.Serializer;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.JoinWindows;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.apache.kafka.streams.state.HostInfo;
-import org.apache.kafka.streams.state.RocksDBConfigSetter;
-import org.mhealth.open.data.avro.MEvent;
-import org.mhealth.open.data.avro.SPatient;
-import org.rocksdb.Options;
-
 ## better not to use wildcard(*)
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
+import cn.issboy.streamapp.structure.*;
+import cn.issboy.streamapp.structure.functions.*;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.processor.TopologyBuilder;
+import org.apache.kafka.streams.state.RocksDBConfigSetter;
+import org.apache.log4j.Logger;
+import org.rocksdb.Options;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
