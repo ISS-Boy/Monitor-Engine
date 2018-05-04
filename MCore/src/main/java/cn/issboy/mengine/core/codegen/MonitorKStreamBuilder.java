@@ -38,7 +38,7 @@ public final class MonitorKStreamBuilder {
                 // JoinWindows 10min by default
                 .append("JoinWindows.of(TimeUnit.MINUTES.toMillis(10)),")
                 // keySerde,LValueSerde,RValueSerde
-                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)");
+                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)\n");
         logger.info(dslBuilder.toString());
         return new MonitorKStreamBuilder(dslBuilder);
     }
@@ -52,7 +52,7 @@ public final class MonitorKStreamBuilder {
                 .append("res.getValues().putAll(right.getValues());\n")
                 .append("return res;},\n")
                 // keySerde,LValueSerde,RValueSerde
-                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)");
+                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)\n");
 
         return new MonitorKStreamBuilder(dslBuilder);
     }
@@ -73,7 +73,13 @@ public final class MonitorKStreamBuilder {
                 .append("res.getValues().putAll(right.getValues());}else{\n")
                 .append("return res;}},")
                 // keySerde,LValueSerde,RValueSerde
-                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)");
+                .append("Serdes.String(),monitorRowSerde,monitorRowSerde)\n");
+
+        return new MonitorKStreamBuilder(dslBuilder);
+    }
+
+    public MonitorKStreamBuilder reMap(){
+        dslBuilder.append(".map((k,v) -> KeyValue.pair(k.substring(0,k.length() - MILLI_LENGTH),v))\n");
 
         return new MonitorKStreamBuilder(dslBuilder);
     }

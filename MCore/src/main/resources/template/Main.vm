@@ -12,7 +12,7 @@ public class Main {
     static final String SLEEP_DURATION = "sleep-duration";
     static final String BODY_FAT_PERCENTAGE = "body-fat-percentage";
 
-    ##static final int MILLI_LENGTH = 13;
+    static final int MILLI_LENGTH = 13;
     static final FunctionRegistry functionRegistry = FunctionRegistry.getFunctionRegistry();
 
     public static class CustomRocksDBConfig implements RocksDBConfigSetter {
@@ -105,7 +105,7 @@ public class Main {
         properties.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
         properties.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG,5);
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+        properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, MonitorRowSerde.class);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
         properties.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, "cn.issboy.streamapp.CustomTimestampExtractor");

@@ -1,3 +1,5 @@
+package cn.issboy.mengine.core.codegen;
+
 import cn.issboy.mengine.core.codegen.MonitorKStreamBuilder;
 import cn.issboy.mengine.core.util.MonitorMetadata;
 import org.apache.velocity.Template;

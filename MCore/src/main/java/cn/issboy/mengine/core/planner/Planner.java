@@ -24,6 +24,8 @@ public class Planner {
         } else {
             curNode = buildSourceNode();
         }
+        curNode = buildReMapNode(curNode);
+
         if (!analysis.getAggContext().toString().equals("")) {
             curNode = buildAggNode(curNode);
         }
@@ -48,6 +50,9 @@ public class Planner {
 
         return new ProjectNode(parentNode, analysis.getSelectFileds());
 
+    }
+    private ReMapNode buildReMapNode(PlanNode parentNode){
+        return new ReMapNode(parentNode);
     }
 
     public AggregateNode buildAggNode(PlanNode parentNode) {

@@ -6,6 +6,7 @@ import cn.issboy.mengine.core.parser.BlockValues;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * created by just on 18-4-23
@@ -13,7 +14,7 @@ import java.util.List;
 public class MonitorAnalyzer {
 
     private final MetaStore metaStore;
-
+    public static AtomicInteger monitorSeqNum = new AtomicInteger(0);
     public MonitorAnalyzer(MetaStore metaStore) {
         this.metaStore = metaStore;
     }

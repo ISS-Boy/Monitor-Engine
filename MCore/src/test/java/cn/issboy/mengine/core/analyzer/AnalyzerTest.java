@@ -1,6 +1,10 @@
+package cn.issboy.mengine.core.analyzer;
+
 import cn.issboy.mengine.core.MEngine;
 import cn.issboy.mengine.core.metastore.MetaStore;
 import cn.issboy.mengine.core.metastore.MetaStoreUtil;
+import cn.issboy.mengine.core.parser.BlockGroup;
+import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 
 import java.io.File;
@@ -233,10 +237,13 @@ public class AnalyzerTest {
         Map<String,Object> properties = new HashMap<>();
         properties.put("topic","monitor-test2");
         properties.put("userId","the-user-1");
-        properties.put("monitorId","asdjfjneqznl0fxrkl");
+        properties.put("monitorGroupId","asdjfjneqznl0fxrkl");
         properties.put("nfsPath","/mnt/nfs/");
+        properties.put("jarPath","/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
         properties.put("bootstrapServers","192.168.222.226:9092");
         properties.put("schemaRegistry","http://192.168.222.226:8081");
-//        mEngine.buildJar(properties,block_join);
+        mEngine.buildJar(properties, JSONObject.parseObject(block_grouped, BlockGroup.class));
+        File jarFile = new File("/mnt/nfs/the-user-1/asdjfjneqznl0fxrkl/monitor-kStream-application.jar");
+        System.out.println(jarFile.exists());
     }
 }

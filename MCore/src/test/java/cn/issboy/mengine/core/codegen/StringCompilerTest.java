@@ -1,3 +1,5 @@
+package cn.issboy.mengine.core.codegen;
+
 import cn.issboy.mengine.core.MEngine;
 import cn.issboy.mengine.core.codegen.StringCompiler;
 import org.junit.Assert;

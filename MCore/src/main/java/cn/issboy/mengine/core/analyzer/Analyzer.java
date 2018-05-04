@@ -1,5 +1,6 @@
 package cn.issboy.mengine.core.analyzer;
 
+import cn.issboy.mengine.core.MEngine;
 import cn.issboy.mengine.core.metastore.DataSource;
 import cn.issboy.mengine.core.metastore.MetaStore;
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
@@ -34,9 +35,10 @@ public class Analyzer extends MonitorVisitor {
     @Override
     public void visitBlockValues(BlockValues node) {
         analysis.getMonitorId().append("_")
-                .append(node.getMonitorName());
+                .append(MonitorAnalyzer.monitorSeqNum.getAndIncrement());
 
-        // 处理源数据
+
+        // 处理数据源
         List<Source> sources = node.getSource();
         for (Source source : sources) {
             process(source);
@@ -78,9 +80,9 @@ public class Analyzer extends MonitorVisitor {
         }
         // 处理聚集值
         // TODO : remove {node.getAggregation()...} after problem fixed in front end.
-        if (node.getAggregation() != null
-                && node.getAggregation().getAggregationValues() != null
-                && !node.getAggregation().getAggregationValues().isEmpty()) {
+        if (node.getAggregation() != null &&
+                node.getAggregation().getAggregationValues() != null &&
+                !node.getAggregation().getAggregationValues().isEmpty()) {
             process(node.getAggregation());
         }
 

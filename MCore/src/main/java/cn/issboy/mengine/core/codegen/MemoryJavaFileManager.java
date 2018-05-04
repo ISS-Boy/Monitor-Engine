@@ -88,6 +88,7 @@ class MemoryJavaFileManager extends ForwardingJavaFileManager<JavaFileManager> {
      * is that a trivial implementation of output to a JarOutputStream is not a sufficient implementation.
      * That is, rather than creating a JavaFileObject that returns the JarOutputStream directly,
      * the contents must be cached until closed and then written to the JarOutputStream.
+     * 摘自javadoc
      */
     class MemoryOutputJavaFileObject extends SimpleJavaFileObject {
         final String name;

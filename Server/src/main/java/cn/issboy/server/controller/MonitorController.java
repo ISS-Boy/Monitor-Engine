@@ -3,6 +3,8 @@ package cn.issboy.server.controller;
 import cn.issboy.mengine.core.MEngine;
 import cn.issboy.server.bean.Request;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import java.util.Map;
 @Controller
 @RequestMapping("/monitor")
 public class MonitorController {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${into-topic}")
     private String intoTopic;
@@ -43,17 +47,20 @@ public class MonitorController {
             HttpStatus status = path != null ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE;
             return new ResponseEntity<>(path, status);
         } catch (Exception e) {
+            logger.error("Failed to handle POST for : {}" , requestStr);
+            e.printStackTrace();
             HttpStatus status = HttpStatus.BAD_REQUEST;
-            return new ResponseEntity(e.getStackTrace(), status);
+            return new ResponseEntity<>(e.getMessage(), status);
         }
     }
 
     public Map<String,Object> initProps(Request request){
         Map<String, Object> properties = new HashMap<>();
-        properties.put("topic", intoTopic);
-        properties.put("jarPath",jarPath);
+
         properties.put("userId", request.getUserId());
         properties.put("monitorGroupId", request.getMonitorGroupId());
+        properties.put("topic", intoTopic);
+        properties.put("jarPath",jarPath);
         properties.put("bootstrapServers", bootstrapServers);
         properties.put("schemaRegistry", schemaRegistry);
         properties.put("nfsPath", nfsPath);

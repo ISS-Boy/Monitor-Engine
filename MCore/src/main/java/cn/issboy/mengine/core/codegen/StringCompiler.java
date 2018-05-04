@@ -38,7 +38,7 @@ public class StringCompiler {
             JavaFileObject javaFileObject = manager.makeStringSource(fileName, code);
             CompilationTask task = compiler.getTask(null, manager, null, null, null, Arrays.asList(javaFileObject));
             Boolean result = task.call();
-            if (result == null || !result.booleanValue()) {
+            if (result == null || !result ) {
                 throw new CompileException("Compilation failed.");
             }
             return manager.getClassBytes();

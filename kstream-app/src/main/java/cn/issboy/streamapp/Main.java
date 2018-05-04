@@ -1,5 +1,4 @@
 package cn.issboy.streamapp;
-
 import cn.issboy.streamapp.structure.*;
 import cn.issboy.streamapp.structure.functions.*;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
@@ -85,7 +84,7 @@ public class Main {
         monitorRowSerde.configure(serdeConfig, false);
 
 
-        final Properties properties0 = getStreamConfig("123_123",
+        final Properties properties0 = getStreamConfig("the-user-1-1525336713764_jjjj",
                 bootstrapServers, schemaRegistryUrl, stateDir);
 
         final KStreamBuilder builder0 = new KStreamBuilder();
@@ -97,18 +96,9 @@ public class Main {
         builder.stream(Serdes.String(),monitorRowSerde,HEART_RATE)
                 .filter((key, value) -> key.equals("the-user-1"))
                 .map((key,value)-> KeyValue.pair(key + value.getValues().get("timestamp").toString(),value))
-                .join(builder.stream(Serdes.String(),monitorRowSerde,BLOOD_PRESSURE)
-                                .filter((key, value) -> key.equals("the-user-1"))
-                                .map((key,value)-> KeyValue.pair(key + value.getValues().get("timestamp").toString(),value))
-                        ,(left,right) -> {GenericRow res = new GenericRow(new HashMap<>(left.getValues()));
-                            res.getValues().putAll(right.getValues());
-                            return res;},
-                        JoinWindows.of(TimeUnit.MINUTES.toMillis(10)),Serdes.String(),monitorRowSerde,monitorRowSerde).groupByKey()
-                .aggregate(new MInitializer("收缩压次数","count","舒张压次数","count","心率次数","count"),new MAggregator(functionRegistry,"收缩压次数","count","systolic_blood_pressure","systolic_blood_pressure>123","舒张压次数","count","diastolic_blood_pressure","diastolic_blood_pressure>180","心率次数","count","heart_rate","heart_rate>120"),TimeWindows.of(TimeUnit.MINUTES.toMillis(10)),monitorRowSerde)
-                .toStream()
-                .filter((k,v)->(Float)v.getValues().get("收缩压次数")>5&&(Float)v.getValues().get("舒张压次数")>5&&(Float)v.getValues().get("心率次数")>5)
-                .mapValues(new SelectValueMapper("收缩压次数","舒张压次数","心率次数"))
-                .map((k,v) -> KeyValue.pair("123_123",v))
+                .filter((k,v)->(Float)v.getValues().get("heart_rate")>70)
+                .mapValues(new SelectValueMapper("heart_rate"))
+                .map((k,v) -> KeyValue.pair("the-user-1-1525336713764_jjjj",v))
                 .to(Serdes.String(),monitorRowSerde,"monitor-test2");
         return builder;
     }
@@ -129,7 +119,7 @@ public class Main {
         properties.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
         properties.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG,5);
         properties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+        properties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, MonitorRowSerde.class);
         properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
         properties.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, "cn.issboy.streamapp.CustomTimestampExtractor");

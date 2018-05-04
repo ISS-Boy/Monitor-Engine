@@ -1,3 +1,5 @@
+package cn.issboy.mengine.core.metastore;
+
 import cn.issboy.mengine.core.metastore.MetaStore;
 import cn.issboy.mengine.core.metastore.MetaStoreUtil;
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
