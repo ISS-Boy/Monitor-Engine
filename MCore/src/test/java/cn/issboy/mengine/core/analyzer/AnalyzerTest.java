@@ -224,6 +224,123 @@ public class AnalyzerTest {
             "\t}]\n" +
             "}";
 
+    String complex_json = "{\n" +
+            "\t\t\"blockGroupName\": \"经典咖啡时光\",\n" +
+            "\t\t\"blockValues\": [{\n" +
+            "\t\t\t\"aggregation\": {\n" +
+            "\t\t\t\t\"aggregationValues\": [{\n" +
+            "\t\t\t\t\t\"measure\": \"systolic_blood_pressure\",\n" +
+            "\t\t\t\t\t\"name\": \"收缩压次数\",\n" +
+            "\t\t\t\t\t\"predicates\": [{\n" +
+            "\t\t\t\t\t\t\"boolExp\": \"and\",\n" +
+            "\t\t\t\t\t\t\"measure\": \"systolic_blood_pressure\",\n" +
+            "\t\t\t\t\t\t\"op\": \">\",\n" +
+            "\t\t\t\t\t\t\"source\": \"blood-pressure\",\n" +
+            "\t\t\t\t\t\t\"threshold\": \"110\"\n" +
+            "\t\t\t\t\t}],\n" +
+            "\t\t\t\t\t\"source\": \"blood-pressure\",\n" +
+            "\t\t\t\t\t\"type\": \"count\"\n" +
+            "\t\t\t\t}, {\n" +
+            "\t\t\t\t\t\"measure\": \"heart_rate\",\n" +
+            "\t\t\t\t\t\"name\": \"心率次数\",\n" +
+            "\t\t\t\t\t\"predicates\": [{\n" +
+            "\t\t\t\t\t\t\"boolExp\": \"and\",\n" +
+            "\t\t\t\t\t\t\"measure\": \"heart_rate\",\n" +
+            "\t\t\t\t\t\t\"op\": \">\",\n" +
+            "\t\t\t\t\t\t\"source\": \"heart-rate\",\n" +
+            "\t\t\t\t\t\t\"threshold\": \"70\"\n" +
+            "\t\t\t\t\t}],\n" +
+            "\t\t\t\t\t\"source\": \"heart-rate\",\n" +
+            "\t\t\t\t\t\"type\": \"count\"\n" +
+            "\t\t\t\t}, {\n" +
+            "\t\t\t\t\t\"measure\": \"body_temperature\",\n" +
+            "\t\t\t\t\t\"name\": \"体温次数\",\n" +
+            "\t\t\t\t\t\"predicates\": [{\n" +
+            "\t\t\t\t\t\t\"boolExp\": \"and\",\n" +
+            "\t\t\t\t\t\t\"measure\": \"body_temperature\",\n" +
+            "\t\t\t\t\t\t\"op\": \"<\",\n" +
+            "\t\t\t\t\t\t\"source\": \"body-temperature\",\n" +
+            "\t\t\t\t\t\t\"threshold\": \"38\"\n" +
+            "\t\t\t\t\t}],\n" +
+            "\t\t\t\t\t\"source\": \"body-temperature\",\n" +
+            "\t\t\t\t\t\"type\": \"count\"\n" +
+            "\t\t\t\t}],\n" +
+            "\t\t\t\t\"window\": {\n" +
+            "\t\t\t\t\t\"windowInterval\": \"\",\n" +
+            "\t\t\t\t\t\"windowLength\": \"10\",\n" +
+            "\t\t\t\t\t\"windowType\": \"tumbling-window\"\n" +
+            "\t\t\t\t}\n" +
+            "\t\t\t},\n" +
+            "\t\t\t\"filters\": [{\n" +
+            "\t\t\t\t\"f_boolExp\": \"and\",\n" +
+            "\t\t\t\t\"f_measure\": \"收缩压次数\",\n" +
+            "\t\t\t\t\"f_op\": \">\",\n" +
+            "\t\t\t\t\"f_source\": \"blood-pressure\",\n" +
+            "\t\t\t\t\"f_threshold\": \"2\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"f_boolExp\": \"and\",\n" +
+            "\t\t\t\t\"f_measure\": \"心率次数\",\n" +
+            "\t\t\t\t\"f_op\": \">\",\n" +
+            "\t\t\t\t\"f_source\": \"heart-rate\",\n" +
+            "\t\t\t\t\"f_threshold\": \"2\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"f_boolExp\": \"and\",\n" +
+            "\t\t\t\t\"f_measure\": \"体温次数\",\n" +
+            "\t\t\t\t\"f_op\": \">\",\n" +
+            "\t\t\t\t\"f_source\": \"body-temperature\",\n" +
+            "\t\t\t\t\"f_threshold\": \"2\"\n" +
+            "\t\t\t}],\n" +
+            "\t\t\t\"monitorName\": \"查询1\",\n" +
+            "\t\t\t\"selects\": [{\n" +
+            "\t\t\t\t\"s_meaOrCal\": \"收缩压次数\",\n" +
+            "\t\t\t\t\"s_source\": \"blood-pressure\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"s_meaOrCal\": \"心率次数\",\n" +
+            "\t\t\t\t\"s_source\": \"heart-rate\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"s_meaOrCal\": \"体温次数\",\n" +
+            "\t\t\t\t\"s_source\": \"body-temperature\"\n" +
+            "\t\t\t}],\n" +
+            "\t\t\t\"source\": [{\n" +
+            "\t\t\t\t\"sourceName\": \"blood-pressure\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"sourceName\": \"heart-rate\"\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"sourceName\": \"body-temperature\"\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"aggregation\": {\n" +
+            "\t\t\t\t\"aggregationValues\": [{\n" +
+            "\t\t\t\t\t\"measure\": \"heart_rate\",\n" +
+            "\t\t\t\t\t\"name\": \"心率增比\",\n" +
+            "\t\t\t\t\t\"predicates\": [],\n" +
+            "\t\t\t\t\t\"source\": \"heart-rate\",\n" +
+            "\t\t\t\t\t\"type\": \"growth radio\"\n" +
+            "\t\t\t\t}],\n" +
+            "\t\t\t\t\"window\": {\n" +
+            "\t\t\t\t\t\"windowInterval\": \"\",\n" +
+            "\t\t\t\t\t\"windowLength\": \"10\",\n" +
+            "\t\t\t\t\t\"windowType\": \"tumbling-window\"\n" +
+            "\t\t\t\t}\n" +
+            "\t\t\t},\n" +
+            "\t\t\t\"filters\": [{\n" +
+            "\t\t\t\t\"f_boolExp\": \"and\",\n" +
+            "\t\t\t\t\"f_measure\": \"心率增比\",\n" +
+            "\t\t\t\t\"f_op\": \">\",\n" +
+            "\t\t\t\t\"f_source\": \"heart-rate\",\n" +
+            "\t\t\t\t\"f_threshold\": \"4\"\n" +
+            "\t\t\t}],\n" +
+            "\t\t\t\"monitorName\": \"查询2\",\n" +
+            "\t\t\t\"selects\": [{\n" +
+            "\t\t\t\t\"s_meaOrCal\": \"心率增比\",\n" +
+            "\t\t\t\t\"s_source\": \"heart-rate\"\n" +
+            "\t\t\t}],\n" +
+            "\t\t\t\"source\": [{\n" +
+            "\t\t\t\t\"sourceName\": \"heart-rate\"\n" +
+            "\t\t\t}]\n" +
+            "\t\t}]\n" +
+            "\t}";
+
     @Test
     public void analyzerTest() throws Exception {
         MEngine mEngine = MEngine.getSingletonEngine();
@@ -242,7 +359,7 @@ public class AnalyzerTest {
         properties.put("jarPath","/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
         properties.put("bootstrapServers","192.168.222.226:9092");
         properties.put("schemaRegistry","http://192.168.222.226:8081");
-        mEngine.buildJar(properties, JSONObject.parseObject(block_grouped, BlockGroup.class));
+        mEngine.buildJar(properties, JSONObject.parseObject(complex_json, BlockGroup.class));
         File jarFile = new File("/mnt/nfs/the-user-1/asdjfjneqznl0fxrkl/monitor-kStream-application.jar");
         System.out.println(jarFile.exists());
     }

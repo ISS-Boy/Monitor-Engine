@@ -42,13 +42,13 @@ public class MonitorController {
         try {
             Request request = JSONObject.parseObject(requestStr,Request.class);
             Map<String,Object> properties = initProps(request);
+            logger.info(request.getBlockGroup().toString());
             String path = mEngine.buildJar(properties, request.getBlockGroup());
 
             HttpStatus status = path != null ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE;
             return new ResponseEntity<>(path, status);
         } catch (Exception e) {
-            logger.error("Failed to handle POST for : {}" , requestStr);
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
             HttpStatus status = HttpStatus.BAD_REQUEST;
             return new ResponseEntity<>(e.getMessage(), status);
         }

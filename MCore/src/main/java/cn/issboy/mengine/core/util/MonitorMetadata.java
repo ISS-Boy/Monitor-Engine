@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * used by Velocity template resolver
  * created by just on 18-1-8
  */
 public class MonitorMetadata {

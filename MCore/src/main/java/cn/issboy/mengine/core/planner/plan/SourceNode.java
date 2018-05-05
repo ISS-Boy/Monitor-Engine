@@ -52,7 +52,7 @@ public class SourceNode extends PlanNode {
                         .append(".map((key,value)-> KeyValue.pair(key + value.getValues().get(\"timestamp\").toString(),value))\n");
                 break;
             case TABLE:
-                builder.append("builder.table(TopologyBuilder.AutoOffsetRest.EARLIEST,")
+                builder.append("builder.table(TopologyBuilder.AutoOffsetReset.EARLIEST,")
                         .append("Serdes.String(),monitorRowSerde,")
                         .append(StringUtil.formatVariable(schemadDataSource.getTopicName()))
                         .append(")\n")

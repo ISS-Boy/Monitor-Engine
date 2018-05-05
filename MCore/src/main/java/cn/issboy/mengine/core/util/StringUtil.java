@@ -1,5 +1,7 @@
 package cn.issboy.mengine.core.util;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -57,6 +59,22 @@ public class StringUtil {
     public static String formatDir(String dir) {
         String separator = System.getProperty("file.separator");
         return dir.replace("/",separator);
+    }
+
+    public static String toString(Throwable e){
+        StringWriter sw = new StringWriter();
+        PrintWriter p = new PrintWriter(sw);
+        p.print(e.getClass().getName());
+        if(e.getMessage() != null){
+            p.print(": " + e.getMessage());
+        }
+        p.println();
+        try{
+            e.printStackTrace(p);
+            return sw.toString();
+        }finally {
+            p.close();
+        }
     }
 
     // Todo: just for test. removed after changing the way to implement schemaCatalog

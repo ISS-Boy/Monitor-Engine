@@ -1,6 +1,7 @@
 package cn.issboy.mengine.core.analyzer;
 
 import cn.issboy.mengine.core.MEngine;
+import cn.issboy.mengine.core.exception.MException;
 import cn.issboy.mengine.core.metastore.DataSource;
 import cn.issboy.mengine.core.metastore.MetaStore;
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
@@ -35,7 +36,7 @@ public class Analyzer extends MonitorVisitor {
     @Override
     public void visitBlockValues(BlockValues node) {
         analysis.getMonitorId().append("_")
-                .append(MonitorAnalyzer.monitorSeqNum.getAndIncrement());
+                .append(MEngine.monitorSeqNum.getAndIncrement());
 
 
         // 处理数据源
@@ -60,13 +61,13 @@ public class Analyzer extends MonitorVisitor {
             PlanNode rightNode = new SourceNode(schemaSources.get(right).getKey());
 
             while (left < right - 1 &&
-                    schemaSources.get(left).getKey().getDataType().equals(schemaSources.get(left + 1).getKey().getDataType())) {
-                PlanNode tmpNode = new SourceNode(schemaSources.get(left++).getKey());
+                   schemaSources.get(left).getKey().getDataType().equals(schemaSources.get(left + 1).getKey().getDataType())) {
+                PlanNode tmpNode = new SourceNode(schemaSources.get(++left).getKey());
                 leftNode = new JoinNode(joinType, leftNode, tmpNode);
             }
             while (left < right - 1 &&
-                    schemaSources.get(right).getKey().getDataType().equals(schemaSources.get(right - 1).getKey().getDataType())) {
-                PlanNode tmpNode = new SourceNode(schemaSources.get(right--).getKey());
+                   schemaSources.get(right).getKey().getDataType().equals(schemaSources.get(right - 1).getKey().getDataType())) {
+                PlanNode tmpNode = new SourceNode(schemaSources.get(--right).getKey());
                 rightNode = new JoinNode(JoinNode.Type.TINNER, tmpNode, rightNode);
             }
             JoinNode joinNode;
@@ -81,21 +82,28 @@ public class Analyzer extends MonitorVisitor {
         // 处理聚集值
         // TODO : remove {node.getAggregation()...} after problem fixed in front end.
         if (node.getAggregation() != null &&
-                node.getAggregation().getAggregationValues() != null &&
-                !node.getAggregation().getAggregationValues().isEmpty()) {
+            node.getAggregation().getAggregationValues() != null &&
+            !node.getAggregation().getAggregationValues().isEmpty()) {
             process(node.getAggregation());
         }
 
         // 处理过滤器
-        List<Filters> filters = node.getFilters();
-        for (Filters filter : filters) {
-            process(filter);
+        if (node.getFilters() != null &&
+            !node.getFilters().isEmpty()) {
+            List<Filters> filters = node.getFilters();
+            for (Filters filter : filters) {
+                process(filter);
+            }
+
         }
 
         // 处理选择结果(Project)
-        List<Selects> selects = node.getSelects();
-        for (Selects select : selects) {
-            process(select);
+        if (node.getSelects() != null &&
+            !node.getSelects().isEmpty()) {
+            List<Selects> selects = node.getSelects();
+            for (Selects select : selects) {
+                process(select);
+            }
         }
     }
 

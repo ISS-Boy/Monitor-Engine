@@ -11,7 +11,7 @@ import java.util.List;
  * created by just on 18-1-4
  */
 public final class MonitorKStreamBuilder {
-    final static Logger logger = LoggerFactory.getLogger(MonitorKStreamBuilder.class);
+    private final static Logger logger = LoggerFactory.getLogger(MonitorKStreamBuilder.class);
 
     private final StringBuilder dslBuilder;
 

@@ -6,6 +6,10 @@ import cn.issboy.mengine.core.parser.BlockValues;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MonitorAnalyzer {
 
     private final MetaStore metaStore;
-    public static AtomicInteger monitorSeqNum = new AtomicInteger(0);
+
     public MonitorAnalyzer(MetaStore metaStore) {
         this.metaStore = metaStore;
     }
@@ -26,8 +30,12 @@ public class MonitorAnalyzer {
 
         for (BlockValues block : blockValues) {
             Analysis analysis = new Analysis();
+            // 拷贝一份,在analyze的时候会变更旧视图(加Filed)
+            MetaStore tmpMetaStore = metaStore.clone();
 
-            Analyzer analyzer = new Analyzer(analysis,metaStore);
+            ExecutorService analyzeExecutors = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
+
+            Analyzer analyzer = new Analyzer(analysis,tmpMetaStore);
             analyzer.process(block);
             analysisGroup.add(analysis);
         }

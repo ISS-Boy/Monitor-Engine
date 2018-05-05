@@ -38,6 +38,7 @@ import java.util.jar.JarOutputStream;
 public class MEngine {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    public static AtomicInteger monitorSeqNum = new AtomicInteger(0);
     private String jarFilePath; //= StringUtil.formatDir("/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
     private static final String FINAL_JAR_NAME = StringUtil.formatDir("monitor-kStream-application.jar");
     private static final String MAIN = StringUtil.formatDir("template/Main.vm");
@@ -62,10 +63,10 @@ public class MEngine {
     }
 
 
-    public String buildJar(Map<String, Object> props, BlockGroup monitorContext) throws IOException, InterruptedException {
-        // 拷贝一份,在analyze的时候会变更旧视图(加Filed)
-        MetaStore tmpMetaStore = metaStore.clone();
-        List<Analysis> analysisGroup = new MonitorAnalyzer(tmpMetaStore).analyze(monitorContext);
+    public String buildJar(Map<String, Object> props, BlockGroup monitorContext) throws IOException,MException {
+        monitorSeqNum.set(0);
+
+        List<Analysis> analysisGroup = new MonitorAnalyzer(metaStore).analyze(monitorContext);
 
         MonitorMetadata metadata = new MonitorMetadata();
         metadata.setBootstrapServers(props.get("bootstrapServers").toString());
