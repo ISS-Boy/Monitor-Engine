@@ -3,7 +3,7 @@ package cn.issboy.mengine.core.planner.plan;
 import cn.issboy.mengine.core.codegen.MonitorKStreamBuilder;
 import cn.issboy.mengine.core.metastore.DataSource;
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
-import cn.issboy.mengine.core.util.StringUtil;
+import cn.issboy.mengine.core.util.StringUtils;
 import org.apache.avro.Schema;
 
 import java.util.Map;
@@ -44,20 +44,20 @@ public class SourceNode extends PlanNode {
             case STREAM:
                 builder.append("builder.stream(")
                         .append("Serdes.String(),monitorRowSerde,")
-                        .append(StringUtil.formatVariable(schemadDataSource.getTopicName()))
+                        .append(StringUtils.formatVariable(schemadDataSource.getTopicName()))
                         .append(")\n")
                         .append(".filter((key, value) -> key.equals(")
-                        .append(StringUtil.wrapString(userId))
+                        .append(StringUtils.wrapString(userId))
                         .append("))\n")
                         .append(".map((key,value)-> KeyValue.pair(key + value.getValues().get(\"timestamp\").toString(),value))\n");
                 break;
             case TABLE:
                 builder.append("builder.table(TopologyBuilder.AutoOffsetReset.EARLIEST,")
                         .append("Serdes.String(),monitorRowSerde,")
-                        .append(StringUtil.formatVariable(schemadDataSource.getTopicName()))
+                        .append(StringUtils.formatVariable(schemadDataSource.getTopicName()))
                         .append(")\n")
                         .append(".filter((key, value) -> key.equals(")
-                        .append(StringUtil.wrapString(userId))
+                        .append(StringUtils.wrapString(userId))
                         .append("))\n");
                 break;
 

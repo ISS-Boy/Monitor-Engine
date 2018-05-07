@@ -10,20 +10,21 @@ import cn.issboy.mengine.core.planner.plan.JoinNode;
 import cn.issboy.mengine.core.planner.plan.PlanNode;
 import cn.issboy.mengine.core.planner.plan.SourceNode;
 import cn.issboy.mengine.core.util.SchemaUtil;
-import cn.issboy.mengine.core.util.StringUtil;
+import cn.issboy.mengine.core.util.StringUtils;
 import javafx.util.Pair;
 import org.apache.avro.Schema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.Console;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 
 /**
  * created by just on 18-2-26
  */
 public class Analyzer extends MonitorVisitor {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Analysis analysis;
     MetaStore metaStore;
@@ -104,7 +105,11 @@ public class Analyzer extends MonitorVisitor {
             for (Selects select : selects) {
                 process(select);
             }
+        }else{
+            logger.error("no select item provided");
+            throw new MException("please choose select block to complete monitor");
         }
+
     }
 
 
@@ -147,26 +152,30 @@ public class Analyzer extends MonitorVisitor {
         Schema newSchema = SchemaUtil.expandSchema(dataSource.getSchema(), alias, derivedType);
         metaStore.putDataSource(new SchemadDataSource(DataSource.DataType.TABLE, newSchema, source));
 
-        initializer.append(StringUtil.wrapString(alias))
+        initializer.append(StringUtils.wrapString(alias))
                 .append(",")
-                .append(StringUtil.wrapString(funcName))
+                .append(StringUtils.wrapString(funcName))
                 .append(",");
 
-        aggregator.append(StringUtil.wrapString(alias))
+        aggregator.append(StringUtils.wrapString(alias))
                 .append(",")
-                .append(StringUtil.wrapString(funcName))
+                .append(StringUtils.wrapString(funcName))
                 .append(",")
-                .append(StringUtil.wrapString(measure))
+                .append(StringUtils.wrapString(measure))
                 .append(",");
 
         if (node.getPredicates() != null && !node.getPredicates().isEmpty()) {
             // systolic_blood_pressure > 120 && diastolic_blood_pressure > 80
             List<Predicates> predicates = node.getPredicates();
+
             int length = predicates.size();
             if (length > 1) {
                 aggregator.append("\"");
                 for (int i = 0; i < length; i++) {
                     Predicates predicate = predicates.get(i);
+                    if(!predicate.getMeasure().equals(measure)){
+                        throw new IllegalStateException("please confirm your choice on aggregation values");
+                    }
                     aggregator.append(predicate.getMeasure())
                             .append(predicate.getOp())
                             .append(predicate.getThreshold());
@@ -181,7 +190,7 @@ public class Analyzer extends MonitorVisitor {
 
         } else {
             // 占位
-            aggregator.append(StringUtil.wrapString(""));
+            aggregator.append(StringUtils.wrapString(""));
         }
         aggregator.append(",");
 
@@ -233,14 +242,14 @@ public class Analyzer extends MonitorVisitor {
                 .getField(measure).schema().getType().toString();
 
         predicateBuilder.append("(")
-                .append(StringUtil.lowerCase(fieldSchema))
+                .append(StringUtils.lowerCase(fieldSchema))
                 .append(")")
                 .append("v.getValues().get(")
-                .append(StringUtil.wrapString(measure))
+                .append(StringUtils.wrapString(measure))
                 .append(")")
                 .append(node.getF_op())
                 .append(threshold)
-                .append(StringUtil.toSymbol(node.getF_boolExp()));
+                .append(StringUtils.toSymbol(node.getF_boolExp()));
 
         analysis.addPredicate(predicateBuilder.toString());
     }
@@ -248,7 +257,7 @@ public class Analyzer extends MonitorVisitor {
     @Override
     public void visitSelects(Selects node) {
         // {alias0,alias1,...}
-        analysis.addField(StringUtil.wrapString(node.getS_meaOrCal()));
+        analysis.addField(StringUtils.wrapString(node.getS_meaOrCal()));
     }
 
 

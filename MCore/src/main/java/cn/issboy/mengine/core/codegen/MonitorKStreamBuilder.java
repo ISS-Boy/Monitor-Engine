@@ -1,6 +1,6 @@
 package cn.issboy.mengine.core.codegen;
 
-import cn.issboy.mengine.core.util.StringUtil;
+import cn.issboy.mengine.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,6 @@ public final class MonitorKStreamBuilder {
                 .append("JoinWindows.of(TimeUnit.MINUTES.toMillis(10)),")
                 // keySerde,LValueSerde,RValueSerde
                 .append("Serdes.String(),monitorRowSerde,monitorRowSerde)\n");
-        logger.info(dslBuilder.toString());
         return new MonitorKStreamBuilder(dslBuilder);
     }
 
@@ -93,9 +92,9 @@ public final class MonitorKStreamBuilder {
         dslBuilder.append(".groupByKey()\n")
                 .append(".aggregate(")
                 .append("new MInitializer(")
-                .append(StringUtil.trimLastSymbol(initializer))
+                .append(StringUtils.trimLastSymbol(initializer))
                 .append("),new MAggregator(functionRegistry,")
-                .append(StringUtil.trimLastSymbol(aggregator))
+                .append(StringUtils.trimLastSymbol(aggregator))
                 .append("),");
         if (window != null) {
             dslBuilder.append(window)
@@ -116,7 +115,7 @@ public final class MonitorKStreamBuilder {
             if (i < predicates.size() - 1) {
                 dslBuilder.append(predicates.get(i));
             } else {
-                dslBuilder.append(StringUtil.trimLastSymbol(predicates.get(i)));
+                dslBuilder.append(StringUtils.trimLastSymbol(predicates.get(i)));
                 dslBuilder.append(")\n");
             }
         }
@@ -145,10 +144,10 @@ public final class MonitorKStreamBuilder {
     public MonitorKStreamBuilder into(String monitorId, String topic) {
 
         dslBuilder.append(".map((k,v) -> KeyValue.pair(")
-                .append(StringUtil.wrapString(monitorId))
+                .append(StringUtils.wrapString(monitorId))
                 .append(",v))\n")
                 .append(".to(Serdes.String(),monitorRowSerde,")
-                .append(StringUtil.wrapString(topic))
+                .append(StringUtils.wrapString(topic))
                 .append(");");
         logger.info(dslBuilder.toString());
         return new MonitorKStreamBuilder(dslBuilder);

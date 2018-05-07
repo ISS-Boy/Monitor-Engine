@@ -13,7 +13,7 @@ import cn.issboy.mengine.core.parser.BlockGroup;
 import cn.issboy.mengine.core.planner.Planner;
 import cn.issboy.mengine.core.planner.plan.PlanNode;
 import cn.issboy.mengine.core.util.MonitorMetadata;
-import cn.issboy.mengine.core.util.StringUtil;
+import cn.issboy.mengine.core.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.tools.jar.Main;
@@ -21,8 +21,6 @@ import sun.tools.jar.Main;
 import java.io.*;
 import java.nio.file.*;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -36,15 +34,15 @@ import java.util.jar.JarOutputStream;
  */
 
 public class MEngine {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static AtomicInteger monitorSeqNum = new AtomicInteger(0);
-    private String jarFilePath; //= StringUtil.formatDir("/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
-    private static final String FINAL_JAR_NAME = StringUtil.formatDir("monitor-kStream-application.jar");
-    private static final String MAIN = StringUtil.formatDir("template/Main.vm");
-    private static final String DOCKERFILE_TEMPLATE = StringUtil.formatDir("template/Dockerfile.vm");
+    private String jarFilePath; //= StringUtils.replaceSeparator("/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
+    private static final String FINAL_JAR_NAME = StringUtils.replaceSeparator("monitor-kStream-application.jar");
+    private static final String MAIN = StringUtils.replaceSeparator("template/Main.vm");
+    private static final String DOCKERFILE_TEMPLATE = StringUtils.replaceSeparator("template/Dockerfile.vm");
 
-    public static class MEngineHolder {
+    private static class MEngineHolder {
         private static final MEngine singleEngine = new MEngine();
     }
 
@@ -72,7 +70,7 @@ public class MEngine {
         metadata.setBootstrapServers(props.get("bootstrapServers").toString());
         metadata.setSchemaRegistry(props.get("schemaRegistry").toString());
         String monitorGroupId = props.get("monitorGroupId").toString();
-        jarFilePath = StringUtil.formatDir(props.get("jarPath").toString());
+        jarFilePath = StringUtils.replaceSeparator(props.get("jarPath").toString());
 
         for (Analysis analysis : analysisGroup) {
             PlanNode plan = new Planner(analysis).buildPlan();
@@ -125,10 +123,10 @@ public class MEngine {
                 args[i++] = Paths.get(jarFilePath).getParent().toString();
                 String fileName = clazz.getKey().replace(".", "/") + ".class";
                 args[i++] = fileName;
-                createFolder(StringUtil.formatDir(args[3] + "/" + Paths.get(fileName).getParent().toString()));
+                createFolder(StringUtils.replaceSeparator(args[3] + "/" + Paths.get(fileName).getParent().toString()));
                 byte[] bytecode = clazz.getValue();
 
-                try(FileOutputStream fops = new FileOutputStream(StringUtil.formatDir(args[3] + "/" + fileName))){
+                try(FileOutputStream fops = new FileOutputStream(StringUtils.replaceSeparator(args[3] + "/" + fileName))){
                     fops.write(bytecode);
                 }catch (FileNotFoundException e){
                     logger.error("Failed to open file : " ,fileName);
@@ -139,7 +137,6 @@ public class MEngine {
                 }
 
             }
-            System.out.printf("file write cost time : ",Instant.now().toEpochMilli() - start);
             // update jar file.
             main.run(args);
             Path path = Paths.get(jarFilePath);
@@ -229,12 +226,10 @@ public class MEngine {
     }
 
     @VisibleForTesting
-    protected void createFolder(String folderName) {
+    void createFolder(String folderName) {
         File folder = new File(folderName);
         if (!folder.exists()) {
-            while (!folder.mkdirs()) {
-                ;
-            }
+            while (!folder.mkdirs()) ;
         }
 
     }

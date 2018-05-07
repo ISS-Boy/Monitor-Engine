@@ -47,6 +47,7 @@ public class MInitializer implements Initializer<GenericRow> {
         for (int i = 0; i < names.length; i+=2) {
             switch (names[i + 1]){
                 case "rate":
+                case "amplitude":
                     columns.put(names[i],null);
                 case "average":
                     columns.put(names[i],null);

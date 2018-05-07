@@ -1,11 +1,9 @@
 package cn.issboy.mengine.core.metastore;
 
-import cn.issboy.mengine.core.util.StringUtil;
-import io.confluent.kafka.formatter.AvroMessageFormatter;
+import cn.issboy.mengine.core.util.StringUtils;
 import org.apache.avro.Schema;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -18,7 +16,7 @@ public class MetaStoreUtil {
         try{
             String avro = new String(Files.readAllBytes(Paths.get(avroFilePath)));
             Schema schema = new Schema.Parser().parse(avro);
-            return new SchemadDataSource(DataSource.DataType.STREAM,schema, StringUtil.replaceDash(schema.getName()));
+            return new SchemadDataSource(DataSource.DataType.STREAM,schema, StringUtils.replaceDash(schema.getName()));
 
         }catch (IOException e){
             throw new RuntimeException("Failed to parse avro for"+ avroFilePath);

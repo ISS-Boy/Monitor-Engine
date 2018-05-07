@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * created by just on 18-1-8
  */
-public class StringUtil {
+public class StringUtils {
 
     public static String wrapString(String str) {
         StringBuilder sb = new StringBuilder();
@@ -56,7 +56,7 @@ public class StringUtil {
         return topicName.replace('-', '_').toUpperCase(Locale.ROOT);
     }
 
-    public static String formatDir(String dir) {
+    public static String replaceSeparator(String dir) {
         String separator = System.getProperty("file.separator");
         return dir.replace("/",separator);
     }

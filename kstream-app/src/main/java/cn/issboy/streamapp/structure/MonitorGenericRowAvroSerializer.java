@@ -1,6 +1,7 @@
 package cn.issboy.streamapp.structure;
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -55,6 +56,8 @@ public class MonitorGenericRowAvroSerializer implements Serializer<GenericRow> {
                 }else if (value instanceof Float){
                     // TODO: 18-2-27 support a fixed schema only, declare a schema variable in this class.
                     // TODO: 18-2-27 and generate an avro schema dynamically.(more topics needed however zzz)
+
+
                     measureMap.put(key,(Float) value);
                 }
             });
@@ -66,8 +69,9 @@ public class MonitorGenericRowAvroSerializer implements Serializer<GenericRow> {
 
     }
 
+
     @Override
     public void close() {
-
+        ;
     }
 }

@@ -1,5 +1,6 @@
 package cn.issboy.streamapp.structure;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
 import org.apache.kafka.streams.kstream.ValueMapper;
 
 import java.util.HashMap;
@@ -27,7 +28,8 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
             if (selectedValues[i].equals("1")) {
                 values.put("1", 1f);
             } else {
-                values.put(selectedValues[i], genericRow.getValues().get(selectedValues[i]));
+
+                values.put(chineseToPinyin(selectedValues[i]), genericRow.getValues().get(selectedValues[i]));
             }
         }
         values.put("timestamp", genericRow.getValues().get("timestamp"));
@@ -36,6 +38,26 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
         return newRow;
 
 
+    }
+    private String chineseToPinyin(String source) {
+        char[] cs = source.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        boolean hanyu = false;
+        for (char c : cs) {
+            if (c <= 128) {
+                sb.append(c);
+                hanyu = false;
+            } else {
+                String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c);
+                String pinyin = pinyins[0].substring(0, pinyins[0].length() - 1);
+                System.out.println(pinyin);
+                if (hanyu)
+                    sb.append('-');
+                sb.append(pinyin);
+                hanyu = true;
+            }
+        }
+        return sb.toString();
     }
 
     public void printHelper(String aspect, String op, GenericRow left, GenericRow right) {

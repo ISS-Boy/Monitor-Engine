@@ -3,6 +3,7 @@ package cn.issboy.server.controller;
 import cn.issboy.mengine.core.MEngine;
 import cn.issboy.server.bean.Request;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.deploy.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +57,6 @@ public class MonitorController {
 
     public Map<String,Object> initProps(Request request){
         Map<String, Object> properties = new HashMap<>();
-
         properties.put("userId", request.getUserId());
         properties.put("monitorGroupId", request.getMonitorGroupId());
         properties.put("topic", intoTopic);

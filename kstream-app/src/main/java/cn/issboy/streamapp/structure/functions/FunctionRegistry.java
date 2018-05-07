@@ -29,6 +29,10 @@ public class FunctionRegistry {
 
         addFunction(new FloatMinudaf());
 
+        addFunction(new FloatMaxudaf());
+
+        addFunction(new FloatAmpudaf());
+
         addFunction(new FloatAverageudaf());
 
         addFunction(new Countudaf());
