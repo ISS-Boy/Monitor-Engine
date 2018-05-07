@@ -1,6 +1,5 @@
 package cn.issboy.mengine.core;
 
-import com.sun.deploy.util.ReflectionUtil;
 import org.junit.Test;
 import sun.tools.jar.Main;
 
@@ -59,24 +58,6 @@ public class MEngineTest {
             e.printStackTrace();
         }
         System.out.println(Instant.now().toEpochMilli() - start);
-    }
-
-    @Test
-    public void updateJarReflectTest() throws Exception {
-        File expandFile = new File("/home/just/IdeaProjects/MEngine/kstream-app/target/cn/issboy/streamapp/aa.class");
-        mEngine.createFolder("/home/just/IdeaProjects/MEngine/kstream-app/target/cn/issboy/streamapp");
-        FileOutputStream fops = new FileOutputStream(expandFile);
-        fops.write("test".getBytes());
-
-        Object[] objects = {System.out,System.err,"jar"};
-        Class[] clazz = {PrintStream.class,PrintStream.class,String.class};
-        Object main1 = ReflectionUtil.createInstance("sun.tools.jar.Main",clazz,objects,this.getClass().getClassLoader());
-
-        ReflectionUtil.invoke(main1,"run",new Class[]{String[].class},
-                new Object[]{new String[]{"uf","/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar",
-                        "-C","/home/just/IdeaProjects/MEngine/kstream-app/target","cn/issboy/streamapp/aa.class"}});
-        fops.close();
-        expandFile.deleteOnExit();
     }
 
 

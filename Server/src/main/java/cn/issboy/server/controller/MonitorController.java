@@ -3,7 +3,6 @@ package cn.issboy.server.controller;
 import cn.issboy.mengine.core.MEngine;
 import cn.issboy.server.bean.Request;
 import com.alibaba.fastjson.JSONObject;
-import com.sun.deploy.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
