@@ -49,8 +49,7 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
                 hanyu = false;
             } else {
                 String[] pinyins = PinyinHelper.toHanyuPinyinStringArray(c);
-                String pinyin = pinyins[0].substring(0, pinyins[0].length() - 1);
-                System.out.println(pinyin);
+                String pinyin = pinyins[0].replaceAll("[^a-z]", "");
                 if (hanyu)
                     sb.append('-');
                 sb.append(pinyin);
@@ -58,6 +57,7 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
             }
         }
         return sb.toString();
+
     }
 
     public void printHelper(String aspect, String op, GenericRow left, GenericRow right) {
