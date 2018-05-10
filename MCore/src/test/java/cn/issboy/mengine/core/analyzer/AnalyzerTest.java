@@ -131,13 +131,7 @@ public class AnalyzerTest {
             "\t\t}],\n" +
             "\t\t\"selects\": [{\n" +
             "\t\t\t\"s_source\": \"blood-pressure\",\n" +
-            "\t\t\t\"s_meaOrCal\": \"收缩压次数\"\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"s_source\": \"blood-pressure\",\n" +
-            "\t\t\t\"s_meaOrCal\": \"舒张压次数\"\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"s_source\": \"heart-rate\",\n" +
-            "\t\t\t\"s_meaOrCal\": \"心率次数\"\n" +
+            "\t\t\t\"s_meaOrCal\": \"1\"\n" +
             "\t\t}]\n" +
             "\t}]\n" +
             "}";
@@ -359,8 +353,9 @@ public class AnalyzerTest {
         properties.put("jarPath","/home/just/IdeaProjects/MEngine/kstream-app/target/kstream-app-template-1.0-SNAPSHOT-jar-with-dependencies.jar");
         properties.put("bootstrapServers","192.168.222.226:9092");
         properties.put("schemaRegistry","http://192.168.222.226:8081");
-        mEngine.buildJar(properties, JSONObject.parseObject(complex_json, BlockGroup.class));
+        mEngine.buildJar(properties, JSONObject.parseObject(block_join, BlockGroup.class));
         File jarFile = new File("/mnt/nfs/the-user-1/asdjfjneqznl0fxrkl/monitor-kStream-application.jar");
-        System.out.println(jarFile.exists());
+        assert (jarFile.exists());
+        jarFile.deleteOnExit();
     }
 }

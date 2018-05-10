@@ -17,7 +17,21 @@
 
 
 
-
+    <!--指定项目中公有的模块-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>ISSBoy</groupId>
+                <artifactId>kstream-app-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ISSBoy</groupId>
+                <artifactId>monitor-engine-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
     <properties>
@@ -36,6 +50,7 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

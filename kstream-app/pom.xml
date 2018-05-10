@@ -156,6 +156,7 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <mainClass>cn.issboy.streamapp.Main</mainClass>
+
                     </manifest>
                 </archive>
                 <attach>false</attach>

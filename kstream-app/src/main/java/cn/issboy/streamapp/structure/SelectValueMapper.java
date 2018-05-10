@@ -25,12 +25,7 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
         printHelper("before", "select", genericRow, null);
         Map<String, Object> values = new HashMap<>();
         for (int i = 0; i < selectedValues.length; i++) {
-            if (selectedValues[i].equals("1")) {
-                values.put("1", 1f);
-            } else {
-
-                values.put(chineseToPinyin(selectedValues[i]), genericRow.getValues().get(selectedValues[i]));
-            }
+            values.put(chineseToPinyin(selectedValues[i]), genericRow.getValues().get(selectedValues[i]));
         }
         values.put("timestamp", genericRow.getValues().get("timestamp"));
         GenericRow newRow = new GenericRow(values);
@@ -39,6 +34,7 @@ public class SelectValueMapper implements ValueMapper<GenericRow, GenericRow> {
 
 
     }
+
     private String chineseToPinyin(String source) {
         char[] cs = source.toCharArray();
         StringBuilder sb = new StringBuilder();

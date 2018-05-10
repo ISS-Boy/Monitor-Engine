@@ -53,12 +53,11 @@ public class MonitorGenericRowAvroSerializer implements Serializer<GenericRow> {
             data.getValues().forEach((String key,Object value)->{
                 if(key.equals("timestamp")){
                     genericRecord.put(key,value);
-                }else if (value instanceof Float){
+                }else if (value instanceof Number){
                     // TODO: 18-2-27 support a fixed schema only, declare a schema variable in this class.
                     // TODO: 18-2-27 and generate an avro schema dynamically.(more topics needed however zzz)
 
-
-                    measureMap.put(key,(Float) value);
+                    measureMap.put(key,Float.valueOf(value.toString()));
                 }
             });
             genericRecord.put("measures",measureMap);

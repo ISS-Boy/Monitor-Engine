@@ -29,6 +29,8 @@ public class Analysis {
 
     private List<String> predicates = new ArrayList<>();
 
+    private boolean alert = false;
+
     private List<String> selectFileds = new ArrayList<>();
 
     public StringBuilder getMonitorId() {
@@ -46,6 +48,14 @@ public class Analysis {
     public void setJoin(JoinNode join) {
 
         this.join = join;
+    }
+
+    public boolean hasAlert() {
+        return alert;
+    }
+
+    public void setAlert(boolean alert) {
+        this.alert = alert;
     }
 
     public List<Pair<SchemadDataSource, String>> getSources() {

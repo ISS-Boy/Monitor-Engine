@@ -9,15 +9,17 @@ import java.util.Map;
 /**
  * created by just on 18-1-3
  */
-public class FilterNode extends PlanNode{
+public class FilterNode extends PlanNode {
     private PlanNode Source;
     private final List<String> predicates;
     private final Schema schema;
+    private final boolean alert;
 
-    public FilterNode(PlanNode Source, List<String> predicates) {
+    public FilterNode(PlanNode Source, List<String> predicates, boolean alert) {
         this.Source = Source;
         this.predicates = predicates;
         this.schema = Source.getSchema();
+        this.alert = alert;
     }
 
     public List<String> getPredicates() {
@@ -34,9 +36,14 @@ public class FilterNode extends PlanNode{
         return Source;
     }
 
+    public boolean isAlert() {
+        return alert;
+    }
+
     @Override
     public MonitorKStreamBuilder buildDSL(StringBuilder builder, Map<String, Object> props) {
-        return getSource().buildDSL(builder,props).filter(getPredicates());
+        return isAlert() ? getSource().buildDSL(builder, props).filterMap(getPredicates())
+                : getSource().buildDSL(builder, props).filter(getPredicates());
     }
 
 }

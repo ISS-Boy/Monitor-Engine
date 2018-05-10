@@ -40,6 +40,7 @@ public class MonitorController {
     @ResponseBody
     public ResponseEntity<String> monitor(@RequestBody String requestStr) {
         try {
+            System.out.println(Thread.currentThread().getContextClassLoader().getResource("/"));
             Request request = JSONObject.parseObject(requestStr,Request.class);
             Map<String,Object> properties = initProps(request);
             logger.info(request.getBlockGroup().toString());

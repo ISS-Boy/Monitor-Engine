@@ -256,8 +256,11 @@ public class Analyzer extends MonitorVisitor {
 
     @Override
     public void visitSelects(Selects node) {
+        // alert being true when alert only.
+        analysis.setAlert(node.getS_meaOrCal().equals("1"));
         // {alias0,alias1,...}
         analysis.addField(StringUtils.wrapString(node.getS_meaOrCal()));
+
     }
 
 

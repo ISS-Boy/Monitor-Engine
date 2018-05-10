@@ -61,7 +61,7 @@ public class Planner {
 
     public FilterNode buildFilterNode(PlanNode parentNode) {
 
-        return new FilterNode(parentNode, analysis.getPredicates());
+        return new FilterNode(parentNode, analysis.getPredicates(), analysis.hasAlert());
     }
 
     public SourceNode buildSourceNode() {

@@ -51,6 +51,10 @@ public class Main {
         System.out.println("Connecting to Kafka cluster via bootstrap servers " + bootstrapServers);
         System.out.println("Connecting to Confluent schema registry at " + schemaRegistryUrl);
 
+        System.out.println(System.getProperty("env.class.path"));
+        System.out.println(System.getProperty("application.home"));
+        System.out.println(System.getProperty("java.class.path"));
+
         for(KafkaStreams streams : createStreams(bootstrapServers,
                 schemaRegistryUrl,
                 "/tmp/streams-example")){
