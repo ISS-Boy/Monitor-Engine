@@ -61,32 +61,17 @@ public class MEngine {
 
     public String buildJar(Map<String, Object> props, BlockGroup monitorContext) throws IOException,MException {
         monitorSeqNum.set(0);
-
-        List<Analysis> analysisGroup = new MonitorAnalyzer(metaStore).analyze(monitorContext);
-
-        MonitorMetadata metadata = new MonitorMetadata();
-        metadata.setBootstrapServers(props.get("bootstrapServers").toString());
-        metadata.setSchemaRegistry(props.get("schemaRegistry").toString());
-        String monitorGroupId = props.get("monitorGroupId").toString();
-        jarFilePath = StringUtils.replaceSeparator(props.get("jarPath").toString());
-
-        for (Analysis analysis : analysisGroup) {
-            PlanNode plan = new Planner(analysis).buildPlan();
-            metadata.addMonitorId(monitorGroupId + analysis.getMonitorId().toString());
-
-            MonitorKStreamBuilder streamBuilder = plan.buildDSL(new StringBuilder(), props);
-            metadata.addDSLCode(streamBuilder.getDslBuilder().toString());
-        }
+        MonitorMetadata metadata = buildMetadata(props,monitorContext);
 
         StringBuilder path = new StringBuilder();
         path.append(props.get("userId").toString())
                 .append("/")
-                .append(monitorGroupId)
+                .append(props.get("monitorGroupId").toString())
                 .append("/");
 
         TemplateResolver resolver = new TemplateResolver();
         String javaCode = resolver.resolveMetadata(metadata, "MonitorMetadata", MAIN);
-        logger.info(javaCode);
+
         long tmp = Instant.now().toEpochMilli();
         Map<String, byte[]> classMap = StringCompiler.newInstance().compile("Main.java", javaCode);
         logger.info("compile Time : " + (Instant.now().toEpochMilli() - tmp));
@@ -101,6 +86,30 @@ public class MEngine {
 
         // user/MonitorId-time/
         return path.toString();
+    }
+
+    @VisibleForTesting
+    MonitorMetadata buildMetadata(Map<String, Object> props, BlockGroup monitorContext){
+        List<Analysis> analysisGroup = new MonitorAnalyzer(metaStore).analyze(monitorContext);
+
+        MonitorMetadata metadata = new MonitorMetadata();
+        metadata.setBootstrapServers(props.get("bootstrapServers").toString());
+        metadata.setSchemaRegistry(props.get("schemaRegistry").toString());
+        String monitorGroupId = props.get("monitorGroupId").toString();
+        jarFilePath = StringUtils.replaceSeparator(props.get("jarPath").toString());
+
+        for (Analysis analysis : analysisGroup) {
+            PlanNode plan = new Planner(analysis).buildPlan();
+            String monitorId = monitorGroupId + analysis.getMonitorId().toString();
+            metadata.addMonitorId(monitorId);
+
+            MonitorKStreamBuilder streamBuilder = plan.buildDSL(new StringBuilder(), props);
+            String DSLCode = streamBuilder.getDslBuilder().toString();
+            metadata.addDSLCode(DSLCode);
+            logger.info("=================================={}===============================",monitorId);
+            logger.info(DSLCode);
+        }
+        return metadata;
     }
 
     @Deprecated

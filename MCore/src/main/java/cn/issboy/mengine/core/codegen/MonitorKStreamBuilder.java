@@ -125,25 +125,31 @@ public final class MonitorKStreamBuilder {
 
     /**
      * .mapValues(v -> {
-     *      if(predicates){ v.getValues().put("1",1f);} else {v.getValues().put("1",0f); }
-     *      return v;
-     *      })
+     * if(predicates){ v.getValues().put("1",1f);} else {v.getValues().put("1",0f); }
+     * return v;
+     * })
      */
 
 
-    public MonitorKStreamBuilder filterMap(List<String> predicates) {
+    public MonitorKStreamBuilder filterMap(List<String> predicates, List<String> measures) {
         dslBuilder.append(".mapValues(v -> { \n if(");
         // 构造过滤条件
         for (int i = 0; i < predicates.size(); i++) {
             if (i < predicates.size() - 1) {
                 dslBuilder.append(predicates.get(i));
-            }else{
+            } else {
                 dslBuilder.append(StringUtils.trimLastSymbol(predicates.get(i)));
                 dslBuilder.append(") { v.getValues().put(");
             }
         }
         dslBuilder.append(StringUtils.wrapString("1"))
-                .append(",1f);} else { v.getValues().put(")
+                .append(",1f);} else {");
+        for (String measure : measures) {
+            dslBuilder.append(" v.getValues().put(")
+                    .append(StringUtils.wrapString(measure))
+                    .append(",0f);\n");
+        }
+        dslBuilder.append("v.getValues().put(")
                 .append(StringUtils.wrapString("1"))
                 .append(",0f);} \n")
                 .append("return v;}) \n");

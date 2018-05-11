@@ -251,13 +251,12 @@ public class Analyzer extends MonitorVisitor {
                 .append(threshold)
                 .append(StringUtils.toSymbol(node.getF_boolExp()));
 
+        analysis.addMeasure(measure);
         analysis.addPredicate(predicateBuilder.toString());
     }
 
     @Override
     public void visitSelects(Selects node) {
-        // alert being true when alert only.
-        analysis.setAlert(node.getS_meaOrCal().equals("1"));
         // {alias0,alias1,...}
         analysis.addField(StringUtils.wrapString(node.getS_meaOrCal()));
 

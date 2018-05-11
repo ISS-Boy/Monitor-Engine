@@ -30,8 +30,9 @@ public class StringUtils {
             default:
                 return str;
         }
-
     }
+
+
 
     public static String lowerCase(String type) {
         char[] res = type.toCharArray();

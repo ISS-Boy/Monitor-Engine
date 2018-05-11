@@ -10,16 +10,16 @@ import java.util.Map;
  * created by just on 18-1-3
  */
 public class FilterNode extends PlanNode {
-    private PlanNode Source;
+    private PlanNode source;
     private final List<String> predicates;
+    private final List<String> measures;
     private final Schema schema;
-    private final boolean alert;
 
-    public FilterNode(PlanNode Source, List<String> predicates, boolean alert) {
-        this.Source = Source;
+    public FilterNode(PlanNode Source, List<String> predicates,List<String> measures) {
+        this.source = Source;
         this.predicates = predicates;
         this.schema = Source.getSchema();
-        this.alert = alert;
+        this.measures = measures;
     }
 
     public List<String> getPredicates() {
@@ -33,17 +33,17 @@ public class FilterNode extends PlanNode {
 
     @Override
     public PlanNode getSource() {
-        return Source;
+        return source;
     }
 
-    public boolean isAlert() {
-        return alert;
+    public List<String> getMeasures() {
+        return measures;
     }
 
     @Override
     public MonitorKStreamBuilder buildDSL(StringBuilder builder, Map<String, Object> props) {
-        return isAlert() ? getSource().buildDSL(builder, props).filterMap(getPredicates())
-                : getSource().buildDSL(builder, props).filter(getPredicates());
+        return getSource().buildDSL(builder, props).filterMap(getPredicates(),getMeasures());
+
     }
 
 }

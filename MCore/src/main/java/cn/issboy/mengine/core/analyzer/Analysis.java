@@ -29,7 +29,8 @@ public class Analysis {
 
     private List<String> predicates = new ArrayList<>();
 
-    private boolean alert = false;
+    // data duplicated, remove later.
+    private List<String> measures = new ArrayList<>();
 
     private List<String> selectFileds = new ArrayList<>();
 
@@ -48,14 +49,6 @@ public class Analysis {
     public void setJoin(JoinNode join) {
 
         this.join = join;
-    }
-
-    public boolean hasAlert() {
-        return alert;
-    }
-
-    public void setAlert(boolean alert) {
-        this.alert = alert;
     }
 
     public List<Pair<SchemadDataSource, String>> getSources() {
@@ -95,6 +88,14 @@ public class Analysis {
 
     public void addField(String filed) {
         selectFileds.add(filed);
+    }
+
+    public List<String> getMeasures() {
+        return measures;
+    }
+
+    public void addMeasure(String measure){
+        measures.add(measure);
     }
 
     public List<String> getPredicates() {
