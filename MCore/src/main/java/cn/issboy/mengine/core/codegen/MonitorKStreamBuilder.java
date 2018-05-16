@@ -56,15 +56,15 @@ public final class MonitorKStreamBuilder {
         return new MonitorKStreamBuilder(dslBuilder);
     }
 
-    // .leftJoin(builder,(left,right)->{GenericRow res = new GenericRow(new HashMap<>(left.getValues()));
+    // .streamTableJoin(builder,(left,right)->{GenericRow res = new GenericRow(new HashMap<>(left.getValues()));
     //                      if(right!=null){
     //                          res.getValues().putAll(right.getValues());
     //                      }else{
     //                          return res;
     //                      }
     //                   },serdes)
-    public MonitorKStreamBuilder leftJoin(MonitorKStreamBuilder builder) {
-        dslBuilder.append(".leftJoin(")
+    public MonitorKStreamBuilder streamTableJoin(MonitorKStreamBuilder builder) {
+        dslBuilder.append(".join(")
                 .append(builder.getDslBuilder().toString())
                 // ValueJoiner
                 .append(",(left,right) -> {GenericRow res = new GenericRow(new HashMap<>(left.getValues()));\n")
@@ -108,6 +108,7 @@ public final class MonitorKStreamBuilder {
     }
 
     // .filter((k,v) -> predicates)
+    @Deprecated
     public MonitorKStreamBuilder filter(List<String> predicates) {
 
         dslBuilder.append(".filter((k,v)->");
@@ -124,13 +125,12 @@ public final class MonitorKStreamBuilder {
     }
 
     /**
+     * 取代filter,为了在grafana展示的时候用0值代表dataPoints不满足条件
      * .mapValues(v -> {
      * if(predicates){ v.getValues().put("1",1f);} else {v.getValues().put("1",0f); }
      * return v;
      * })
      */
-
-
     public MonitorKStreamBuilder filterMap(List<String> predicates, List<String> measures) {
         dslBuilder.append(".mapValues(v -> { \n if(");
         // 构造过滤条件

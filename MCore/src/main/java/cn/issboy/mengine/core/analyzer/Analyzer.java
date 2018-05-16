@@ -47,11 +47,11 @@ public class Analyzer extends MonitorVisitor {
         }
         List<Pair<SchemadDataSource, String>> schemaSources = analysis.getSources();
 
-        /** 多于两个数据源时进行join操作
-         *
+        /**
+         * 多于两个数据源时进行join操作
          *
          */
-        if (schemaSources.size() >= 2) {
+        if (schemaSources.size() > 1) {
             int left = 0, right = schemaSources.size() - 1;
             DataSource.DataType lType = schemaSources.get(left).getKey().getDataType();
             DataSource.DataType rType = schemaSources.get(right).getKey().getDataType();
@@ -75,7 +75,7 @@ public class Analyzer extends MonitorVisitor {
             if (flag) {
                 joinNode = new JoinNode(joinType, leftNode, rightNode);
             } else {
-                joinNode = new JoinNode(JoinNode.Type.LEFT, leftNode, rightNode);
+                joinNode = new JoinNode(JoinNode.Type.STINNER, leftNode, rightNode);
             }
             analysis.setJoin(joinNode);
 
@@ -105,9 +105,9 @@ public class Analyzer extends MonitorVisitor {
             for (Selects select : selects) {
                 process(select);
             }
-        }else{
+        } else {
             logger.error("no select item provided");
-            throw new MException("please choose select block to complete monitor");
+            throw new IllegalStateException("please choose select block to complete monitor");
         }
 
     }
@@ -173,8 +173,8 @@ public class Analyzer extends MonitorVisitor {
                 aggregator.append("\"");
                 for (int i = 0; i < length; i++) {
                     Predicates predicate = predicates.get(i);
-                    if(!predicate.getMeasure().equals(measure)){
-                        throw new IllegalStateException("please confirm your choice on aggregation values");
+                    if (!predicate.getMeasure().equals(measure)) {
+                        throw new IllegalStateException("please check your choice on aggregation values");
                     }
                     aggregator.append(predicate.getMeasure())
                             .append(predicate.getOp())

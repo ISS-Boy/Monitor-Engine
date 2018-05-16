@@ -25,7 +25,7 @@ public class TemplateResolver {
         ctx = new VelocityContext();
     }
 
-    public String resolveMetadata(final Object Metadata,String keyName,String templateName){
+    public String resolveTemplate(final Object Metadata,String keyName,String templateName){
         Template template = ve.getTemplate(templateName);
         StringWriter sw = new StringWriter();
 

@@ -16,7 +16,7 @@ import java.util.Map;
 public class JoinNode extends PlanNode {
 
     public enum Type{
-        SINNER,TINNER,OUTER,LEFT
+        SINNER,TINNER,STINNER,OUTER,LEFT
 
     }
 
@@ -45,6 +45,7 @@ public class JoinNode extends PlanNode {
 
 
     // 递归遍历Join树
+    // 如果Join树的左右孩子分别为stream-table,此时做join时需要对stream做remap
     @Override
     public MonitorKStreamBuilder buildDSL(StringBuilder builder, Map<String, Object> props) {
         switch (this.type){
@@ -52,8 +53,8 @@ public class JoinNode extends PlanNode {
                 return left.buildDSL(builder,props).streamJoin(right.buildDSL(new StringBuilder(),props));
             case TINNER:
                 return left.buildDSL(builder,props).tableJoin(right.buildDSL(new StringBuilder(),props));
-            case LEFT:
-                return left.buildDSL(builder,props).leftJoin(right.buildDSL(new StringBuilder(),props));
+            case STINNER:
+                return left.buildDSL(builder,props).reMap().streamTableJoin(right.buildDSL(new StringBuilder(),props));
             case OUTER:
                 // TODO: 18-4-23 future work
                 return null;

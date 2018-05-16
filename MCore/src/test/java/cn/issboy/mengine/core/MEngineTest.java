@@ -27,15 +27,17 @@ public class MEngineTest {
     @Test
     public void createFolderTest() throws IOException {
 
-        mEngine.createFolder("/home/just/test");
-        mEngine.createFolder("/home/just/test/test");
-        File folder = new File("/home/just/test");
-        File subFolder = new File("/home/just/test/test");
-        File file = new File("/home/just/test/test/test");
+        mEngine.createFolder("./test");
+        mEngine.createFolder("./test/test");
+        File folder = new File("./test");
+        File subFolder = new File("./test/test");
+        File file = new File("./test/test/test");
         FileOutputStream writer = new FileOutputStream(file);
         writer.write("test".getBytes());
+        assert (file.exists());
         folder.deleteOnExit();
         subFolder.deleteOnExit();
+        file.deleteOnExit();
         writer.close();
     }
 
@@ -416,7 +418,7 @@ public class MEngineTest {
                           "\t}";
 
     @Test
-    public void analyzerTest() throws Exception {
+    public void buildMetadataTest() throws Exception {
         MEngine mEngine = MEngine.getSingletonEngine();
         File file = new File(path);
         MetaStore metaStore = mEngine.getMetaStore();

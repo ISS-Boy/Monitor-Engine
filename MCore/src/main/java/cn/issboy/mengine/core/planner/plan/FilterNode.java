@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * behaves like having in SQL
  * created by just on 18-1-3
  */
 public class FilterNode extends PlanNode {

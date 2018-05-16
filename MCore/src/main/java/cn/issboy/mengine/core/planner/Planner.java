@@ -24,6 +24,7 @@ public class Planner {
         } else {
             curNode = buildSourceNode();
         }
+        // analyze的时候应该记录一下是不是只有stream-stream join
         curNode = buildReMapNode(curNode);
 
         if (!analysis.getAggContext().toString().equals("")) {
@@ -40,12 +41,12 @@ public class Planner {
     }
 
 
-    public OutputNode buildOutputNode(PlanNode parentNode) {
+    private OutputNode buildOutputNode(PlanNode parentNode) {
 
         return new OutputNode(parentNode,analysis.getMonitorId().toString());
     }
 
-    public ProjectNode buildProjectNode(PlanNode parentNode) {
+    private ProjectNode buildProjectNode(PlanNode parentNode) {
 
 
         return new ProjectNode(parentNode, analysis.getSelectFileds());
@@ -55,16 +56,16 @@ public class Planner {
         return new ReMapNode(parentNode);
     }
 
-    public AggregateNode buildAggNode(PlanNode parentNode) {
+    private AggregateNode buildAggNode(PlanNode parentNode) {
         return new AggregateNode(parentNode, analysis.getInitContext().toString(), analysis.getAggContext().toString(), analysis.getWindow());
     }
 
-    public FilterNode buildFilterNode(PlanNode parentNode) {
+    private FilterNode buildFilterNode(PlanNode parentNode) {
 
         return new FilterNode(parentNode, analysis.getPredicates(),analysis.getMeasures());
     }
 
-    public SourceNode buildSourceNode() {
+    private SourceNode buildSourceNode() {
 
         Pair<SchemadDataSource, String> schemadDataSourceStringPair = analysis.getSources().get(0);
         return new SourceNode(schemadDataSourceStringPair.getKey());

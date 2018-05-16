@@ -58,38 +58,39 @@ public class MEngine {
         return metaStore;
     }
 
-
-    public String buildJar(Map<String, Object> props, BlockGroup monitorContext) throws IOException,MException {
+    public String buildJar(Map<String, Object> props, BlockGroup monitorContext) throws IOException, MException {
         monitorSeqNum.set(0);
-        MonitorMetadata metadata = buildMetadata(props,monitorContext);
+        MonitorMetadata metadata = buildMetadata(props, monitorContext);
 
         StringBuilder path = new StringBuilder();
+
         path.append(props.get("userId").toString())
                 .append("/")
                 .append(props.get("monitorGroupId").toString())
                 .append("/");
 
         TemplateResolver resolver = new TemplateResolver();
-        String javaCode = resolver.resolveMetadata(metadata, "MonitorMetadata", MAIN);
+        String javaCode = resolver.resolveTemplate(metadata, "MonitorMetadata", MAIN);
 
         long tmp = Instant.now().toEpochMilli();
         Map<String, byte[]> classMap = StringCompiler.newInstance().compile("Main.java", javaCode);
-        logger.info("compile Time : " + (Instant.now().toEpochMilli() - tmp));
+        logger.info("compile Time : {}", (Instant.now().toEpochMilli() - tmp));
         String nfsPath = props.get("nfsPath").toString() + path.toString();
         tmp = Instant.now().toEpochMilli();
         createJar(nfsPath, classMap);
-        logger.info("jar create Time : " + (Instant.now().toEpochMilli() - tmp));
+        logger.info("jar create Time : {}", (Instant.now().toEpochMilli() - tmp));
 
-        String dockerfile = resolver.resolveMetadata("82", "dockerPort", DOCKERFILE_TEMPLATE);
+        String dockerfile = resolver.resolveTemplate("82", "dockerPort", DOCKERFILE_TEMPLATE);
         logger.info(dockerfile);
-        while(!writeDocker(nfsPath + "Dockerfile", dockerfile));
+        while (!writeDocker(nfsPath + "Dockerfile", dockerfile)) ;
 
-        // user/MonitorId-time/
+        // path under nfs
         return path.toString();
     }
 
+
     @VisibleForTesting
-    MonitorMetadata buildMetadata(Map<String, Object> props, BlockGroup monitorContext){
+    MonitorMetadata buildMetadata(Map<String, Object> props, BlockGroup monitorContext) {
         List<Analysis> analysisGroup = new MonitorAnalyzer(metaStore).analyze(monitorContext);
 
         MonitorMetadata metadata = new MonitorMetadata();
@@ -106,14 +107,14 @@ public class MEngine {
             MonitorKStreamBuilder streamBuilder = plan.buildDSL(new StringBuilder(), props);
             String DSLCode = streamBuilder.getDslBuilder().toString();
             metadata.addDSLCode(DSLCode);
-            logger.info("=================================={}===============================",monitorId);
+            logger.info("=================================={}===============================", monitorId);
             logger.info(DSLCode);
         }
         return metadata;
     }
 
     @Deprecated
-    // using tool provided by sun in rt.jar, no need to call by reflect -_- zzz.
+    // using tool provided by sun in rt.jar, no need to call by reflect zzz.
     // if you don't want to change the original jar file, u can modify the code in run() to add a path argument.
     private void updateAndCopyJar(String jarFilePath, String destPath, Map<String, byte[]> classMap) {
         Main main = new Main(System.out, System.err, "jar");
@@ -122,43 +123,41 @@ public class MEngine {
         args[1] = jarFilePath;
         int i = 2;
 
+        // write class files to file system.
+        long start = Instant.now().toEpochMilli();
+        for (Map.Entry<String, byte[]> clazz : classMap.entrySet()) {
+            args[i++] = "-C";
+            args[i++] = Paths.get(jarFilePath).getParent().toString();
+            String fileName = clazz.getKey().replace(".", "/") + ".class";
+            args[i++] = fileName;
+            createFolder(StringUtils.replaceSeparator(args[3] + "/" + Paths.get(fileName).getParent().toString()));
+            byte[] bytecode = clazz.getValue();
 
-            // write class files to file system.
-            long start = Instant.now().toEpochMilli();
-            for (Map.Entry<String, byte[]> clazz : classMap.entrySet()) {
-                args[i++] = "-C";
-                args[i++] = Paths.get(jarFilePath).getParent().toString();
-                String fileName = clazz.getKey().replace(".", "/") + ".class";
-                args[i++] = fileName;
-                createFolder(StringUtils.replaceSeparator(args[3] + "/" + Paths.get(fileName).getParent().toString()));
-                byte[] bytecode = clazz.getValue();
-
-                try(FileOutputStream fops = new FileOutputStream(StringUtils.replaceSeparator(args[3] + "/" + fileName))){
-                    fops.write(bytecode);
-                }catch (FileNotFoundException e){
-                    logger.error("Failed to open file : " ,fileName);
-                    throw new MException("Failed to open file :" + fileName);
-                }catch (IOException e ){
-                    logger.error("I/O operation failed on file : {}",fileName);
-                    throw new MException("Failed to open file :" + fileName);
-                }
-
-            }
-            // update jar file.
-            main.run(args);
-            Path path = Paths.get(jarFilePath);
-            createFolder(destPath);
-            try(FileOutputStream fileOutputStream = new FileOutputStream(destPath + FINAL_JAR_NAME)){
-                Files.copy(path,fileOutputStream);
+            try (FileOutputStream fops = new FileOutputStream(StringUtils.replaceSeparator(args[3] + "/" + fileName))) {
+                fops.write(bytecode);
+            } catch (FileNotFoundException e) {
+                logger.error("Failed to open file : {}", fileName);
+                throw new MException("Failed to open file :" + fileName);
             } catch (IOException e) {
+                logger.error("I/O operation failed on file : {}", fileName);
+                throw new MException("Failed to open file :" + fileName);
+            }
+
+        }
+        // update jar file.
+        main.run(args);
+        Path path = Paths.get(jarFilePath);
+        createFolder(destPath);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(destPath + FINAL_JAR_NAME)) {
+            Files.copy(path, fileOutputStream);
+        } catch (IOException e) {
             logger.info(e.getMessage());
-            throw new MException(String.format("Failed to copy file from %s to %s",jarFilePath,destPath));
+            throw new MException(String.format("Failed to copy file from %s to %s", jarFilePath, destPath));
         }
 
 
     }
 
-    // TODO performance tuning
     // cannot copy tmp to existed jar because {new JarOutputStream} will clear class files.
     private boolean createJar(String destPath, Map<String, byte[]> classMap) throws IOException {
         // Create file descriptors for the jar and a temp jar.
@@ -212,7 +211,7 @@ public class MEngine {
                 }
                 jarUpdated = true;
             } catch (IOException e) {
-                logger.error("error while creating jar",e);
+                logger.error("error while creating jar", e);
                 // Add a stub entry here, so that the jar will close without an
                 // exception.
                 newJar.putNextEntry(new JarEntry("stub"));
@@ -242,20 +241,20 @@ public class MEngine {
     }
 
     private boolean writeDocker(String dockerPath, String dockerfileContent) {
-        FileOutputStream fops  = null;
-        try  {
+        FileOutputStream fops = null;
+        try {
             fops = new FileOutputStream(dockerPath);
             fops.write(dockerfileContent.getBytes());
             return true;
         } catch (IOException e) {
             logger.info(e.getMessage());
             throw new MException(e.getMessage());
-        }finally {
-            if(fops !=null){
+        } finally {
+            if (fops != null) {
                 try {
                     fops.close();
                 } catch (IOException e) {
-                    logger.error("failed to close {}",dockerPath);
+                    logger.error("failed to close {}", dockerPath);
                 }
             }
         }

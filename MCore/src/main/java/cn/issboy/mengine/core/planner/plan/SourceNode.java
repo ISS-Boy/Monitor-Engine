@@ -31,16 +31,18 @@ public class SourceNode extends PlanNode {
     }
 
 
-    /* builder.stream(Serdes.String(), monitorRowSerde, HEART_RATE)
-     *           .filter((key, value) -> key.equals("the-user-1"))
-     *       .map((key, value) -> KeyValue.pair(key + value.getValues().get("timestamp").toString(), value));
+    /**
+     * Todo 将table和filter分开,然后在生成plan的时候做谓词下推,现在等于手工做谓词下推,扩展到多用户时扩展性较差
+     * builder.stream(Serdes.String(), monitorRowSerde, HEART_RATE)
+     * .filter((key, value) -> key.equals("the-user-1"))
+     * .map((key, value) -> KeyValue.pair(key + value.getValues().get("timestamp").toString(), value));
      */
     @Override
-    public MonitorKStreamBuilder buildDSL(StringBuilder builder,final Map<String,Object> props) {
-        String userId = (String)props.get("userId");
+    public MonitorKStreamBuilder buildDSL(StringBuilder builder, final Map<String, Object> props) {
+        String userId = (String) props.get("userId");
 
         DataSource.DataType dataType = schemadDataSource.getDataType();
-        switch (dataType){
+        switch (dataType) {
             case STREAM:
                 builder.append("builder.stream(")
                         .append("Serdes.String(),monitorRowSerde,")
