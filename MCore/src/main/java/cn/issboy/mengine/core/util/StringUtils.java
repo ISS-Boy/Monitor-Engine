@@ -32,8 +32,6 @@ public class StringUtils {
         }
     }
 
-
-
     public static String lowerCase(String type) {
         char[] res = type.toCharArray();
         for (int i = 1; i < res.length; i++) {

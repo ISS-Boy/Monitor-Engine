@@ -2,7 +2,7 @@ package cn.issboy.mengine.core.analyzer;
 
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
 import cn.issboy.mengine.core.planner.plan.JoinNode;
-import javafx.util.Pair;
+import cn.issboy.mengine.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

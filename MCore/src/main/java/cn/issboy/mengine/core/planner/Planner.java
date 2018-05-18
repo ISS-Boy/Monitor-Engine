@@ -3,7 +3,7 @@ package cn.issboy.mengine.core.planner;
 import cn.issboy.mengine.core.analyzer.Analysis;
 import cn.issboy.mengine.core.metastore.SchemadDataSource;
 import cn.issboy.mengine.core.planner.plan.*;
-import javafx.util.Pair;
+import cn.issboy.mengine.core.util.Pair;
 
 /**
  * created by just on 18-1-3

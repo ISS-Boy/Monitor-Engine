@@ -11,7 +11,7 @@ import cn.issboy.mengine.core.planner.plan.PlanNode;
 import cn.issboy.mengine.core.planner.plan.SourceNode;
 import cn.issboy.mengine.core.util.SchemaUtil;
 import cn.issboy.mengine.core.util.StringUtils;
-import javafx.util.Pair;
+import cn.issboy.mengine.core.util.Pair;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
